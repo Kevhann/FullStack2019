@@ -13,7 +13,6 @@ const App = (props) => {
     const [counter, setCounter] = useState(0)
     const setToValue = (value) => setCounter(value)
     
-   
     return (
         <div>
             <Display counter={counter}/>
