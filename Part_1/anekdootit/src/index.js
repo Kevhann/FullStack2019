@@ -6,14 +6,7 @@ const Button = ({ handleClick, text }) => (
         {text}
     </button>
 )
-const vote = (num) => {
-    const copy = [...App.votes]
-    copy[num] += 1
-    setVotes(copy)
-    if (copy[num] > copy[App.mostVoted]) {
-        setMostVoted(num)
-    }
-}
+
 
 const App = () => {
     const [anecdote, setAnecdote] = useState(Math.floor(Math.random() * anecdotes.length))
@@ -21,7 +14,14 @@ const App = () => {
     const [mostVoted, setMostVoted] = useState(0)
 
     const nextAnecdote = () => setAnecdote(Math.floor(Math.random() * anecdotes.length))
-    
+    const vote = (num) => {
+        const copy = [...votes]
+        copy[num] += 1
+        setVotes(copy)
+        if (copy[num] > copy[mostVoted]) {
+            setMostVoted(num)
+        }
+    }
 
     return (
         <div>
