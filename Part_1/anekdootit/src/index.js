@@ -20,9 +20,9 @@ const App = () => {
         setVotes(copy)
         if (copy[num] > copy[mostVoted]) {
             setMostVoted(num)
-        }
+        } 
     }
-
+    
     return (
         <div>
             <h1>Anecdote #{anecdote + 1}</h1>

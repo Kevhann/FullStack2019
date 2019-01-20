@@ -41,18 +41,13 @@ const App = () => {
     const [neutral, setNeutral] = useState(0)
     const [bad, setBad] = useState(0)
 
-    const increment = (value, update) => {
-        update(value + 1)
-        
-    }
-
     return (
         <div>
             <p>Anna palautetta</p>
             <p>
-                <Button handleClick={() => increment(good, setGood)} text="hyvä" />
-                <Button handleClick={() => increment(neutral, setNeutral)} text="neutraali" />
-                <Button handleClick={() => increment(bad, setBad)} text="huono" />
+                <Button handleClick={() => setGood(good + 1)} text="hyvä" />
+                <Button handleClick={() => setNeutral(neutral + 1) }text="neutraali" />
+                <Button handleClick={() => setBad(bad + 1)} text="huono" />
             </p>
             <p>Statistiikka</p>
             <div>
@@ -61,7 +56,6 @@ const App = () => {
         </div>
     )
 }
-
 
 ReactDOM.render(<App />,
     document.getElementById('root')
