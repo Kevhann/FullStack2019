@@ -1,22 +1,26 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
+const Display = props => <div>{props.value}</div>
 
-const App = (props) => {
-    const [left, setLeft] = useState(0)
-    const [right, setRight] = useState(0)
+const Button = (props) => (
+    <button onClick={props.handleClick}>
+        {props.text}
+    </button>
+)
+
+const App = props => {
+    const [value, setValue] = useState(10)
+
+    const setToValue =  (newValue) => () => {
+        setValue(newValue)
+    }
 
     return (
         <div>
-            <div>
-                {left}
-                <button onClick={() => setLeft(left + 1)}>
-                    vasen
-        </button>
-                <button onClick={() => setRight(right + 1)}>
-                    oikea
-        </button>
-                {right}
-            </div>
+            <Display value={value} />
+            <Button handleClick={setToValue(1000)} text="tuhat" />
+            <Button handleClick={setToValue(0)} text="nollaa" />
+            <Button handleClick={setToValue(value + 1)} text="kasvata" />
         </div>
     )
 }
