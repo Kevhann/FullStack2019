@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
-const App = ({ phoneBook }) => {
-  const [persons, setPersons] = useState(phoneBook)
+const App = () => {
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+
+  useEffect(() => {
+    console.log('effect')
+    axios.get('http://localhost:3001/persons').then(response => {
+      console.log('promise fulfilled')
+      setPersons(response.data)
+    })
+  }, [])
 
   const handleNameChange = event => {
     console.log(event.target.value)
@@ -77,7 +86,7 @@ const Add = ({ name, nameChange, number, numberChange, submit }) => (
 )
 
 const Filter = ({ filter, change }) => (
-  <form>
+  <form onSubmit={event => event.preventDefault()}>
     <div>
       rajaa hakua:
       <input value={filter} onChange={change} />
