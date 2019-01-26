@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/people'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [filter, setFilter] = useState('')
+  const [filterBy, setFilter] = useState('')
 
   useEffect(() => {
     console.log('effect')
-    axios.get('http://localhost:3001/persons').then(response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    })
+    personService.getAll().then(initialPersons => setPersons(initialPersons))
+    console.log('promise fulfilled')
   }, [])
 
   const handleNameChange = event => {
@@ -27,23 +25,46 @@ const App = () => {
     console.log(event.target.value)
     setFilter(event.target.value)
   }
+
   const handleFormSubmit = event => {
     event.preventDefault()
-    console.log(persons)
-    if (persons.map(p => p.name).indexOf(newName) > 0) {
-      console.log('sama nimi')
-      window.alert(`${newName} on jo varattu`)
+    const sameName = persons.map(p => p.name).indexOf(newName)
+    if (sameName > 0) {
+      if (
+        window.confirm(
+          `${
+            persons[sameName].name
+          } on jo luettelossa, korvataanko vanha numero uudella?`
+        )
+      ) {
+        personService.update(persons[sameName].id, newNumber)
+        const copy = persons
+        copy[sameName].number = newNumber
+        setPersons(copy)
+      }
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create({
+          name: newName,
+          number: newNumber
+        })
+        .then(response => setPersons(persons.concat(response)))
+    }
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const removeById = (id, name) => {
+    if (window.confirm(`poistetaanko ${name}`)) {
+      personService.remove(id)
+      setPersons(persons.filter(p => p.id !== id))
     }
   }
 
   return (
     <div>
       <h2>Puhelinluettelo</h2>
-      <Filter filter={filter} change={handleFilterChange} />
+      <Filter filterBy={filterBy} change={handleFilterChange} />
       <Add
         name={newName}
         nameChange={handleNameChange}
@@ -53,22 +74,24 @@ const App = () => {
       />
 
       <h2>Numerot</h2>
-      <Rows persons={persons} filter={filter} />
+      <Rows persons={persons} filterBy={filterBy} remove={removeById} />
     </div>
   )
 }
 
-const Rows = ({ persons, filter }) => (
+const Rows = ({ persons, filterBy, remove }) => (
   <ul>
     {persons
-      .filter(p => p.name.toLowerCase().includes(filter))
+      .filter(p => p.name.toLowerCase().includes(filterBy))
       .map(p => (
         <li key={p.name}>
           {p.name} - {p.number}
+          <button onClick={() => remove(p.id, p.name)}>poista</button>
         </li>
       ))}
   </ul>
 )
+
 const Add = ({ name, nameChange, number, numberChange, submit }) => (
   <form onSubmit={submit}>
     <div>
@@ -85,11 +108,11 @@ const Add = ({ name, nameChange, number, numberChange, submit }) => (
   </form>
 )
 
-const Filter = ({ filter, change }) => (
+const Filter = ({ filterBy, change }) => (
   <form onSubmit={event => event.preventDefault()}>
     <div>
       rajaa hakua:
-      <input value={filter} onChange={change} />
+      <input value={filterBy} onChange={change} />
     </div>
   </form>
 )
