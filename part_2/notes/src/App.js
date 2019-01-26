@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
-import axios from 'axios'
 import noteService from './services/notes'
 
 const App = props => {
@@ -21,7 +20,7 @@ const App = props => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
 
-    noteService.update(changedNote).then(response => {
+    noteService.update(id, changedNote).then(response => {
       setNotes(notes.map(note => (note.id !== id ? note : response.data)))
     })
   }
