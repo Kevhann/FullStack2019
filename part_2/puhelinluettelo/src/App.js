@@ -47,10 +47,17 @@ const App = () => {
           `${newName} on jo luettelossa, korvataanko vanha numero uudella?`
         )
       ) {
-        personService.update(persons[sameName].id, newNumber)
-        const copy = persons
-        copy[sameName].number = newNumber
-        setPersons(copy)
+        personService
+          .update(persons[sameName].id, newNumber)
+          .then(response =>
+            setPersons(
+              persons.map(p => (p.id !== persons[sameName].id ? p : response))
+            )
+          )
+          .catch(e => {
+            setPrompt(`henkilö ${newName} oli jo poistettu`, styles.fail)
+            setPersons(persons.filter(p => p.id !== persons[sameName].id))
+          })
         setPrompt(`${newName} numero muutettu`, styles.success)
       }
     } else {

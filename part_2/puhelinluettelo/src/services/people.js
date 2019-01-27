@@ -10,8 +10,8 @@ const remove = id => axios.delete(`${baseUrl}/${id}`)
 
 const update = (id, newNumber) =>
   axios
-    .patch(`${baseUrl}/${id}`, { 'number': `${newNumber}` })
-    .then(console.log('numero muutettu'))
+    .patch(`${baseUrl}/${id}`, { number: `${newNumber}` })
+    .then(response => response.data)
 
 export default {
   getAll,
