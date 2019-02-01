@@ -40,25 +40,27 @@ const App = () => {
 
   const handleFormSubmit = event => {
     event.preventDefault()
-    const sameName = persons.map(p => p.name).indexOf(newName)
-    if (sameName > 0) {
+    const sameName = persons.filter(p => p.name === newName)[0]
+    if (sameName) {
       if (
         window.confirm(
           `${newName} on jo luettelossa, korvataanko vanha numero uudella?`
         )
       ) {
+        sameName.number = newNumber
         personService
-          .update(persons[sameName].id, newNumber)
-          .then(response =>
-            setPersons(
-              persons.map(p => (p.id !== persons[sameName].id ? p : response))
+          .update(sameName)
+          .then(res => {
+            console.log(res)
+            setPrompt(`${newName} numero muutettu`, styles.success)
+            return setPersons(
+              persons.map(p => (p.id !== sameName.id ? p : res))
             )
-          )
-          .catch(e => {
-            setPrompt(`henkilö ${newName} oli jo poistettu`, styles.fail)
-            setPersons(persons.filter(p => p.id !== persons[sameName].id))
           })
-        setPrompt(`${newName} numero muutettu`, styles.success)
+          .catch(error => {
+            setPrompt(`henkilö ${newName} oli jo poistettu`, styles.fail)
+            setPersons(persons.filter(p => p.id !== sameName.id))
+          })
       }
     } else {
       const newPerson = {
@@ -67,7 +69,16 @@ const App = () => {
       }
       personService
         .create(newPerson)
-        .then(response => setPersons(persons.concat(response)))
+        .then(res => {
+          console.log('create response', res)
+          newPerson.id = res.id
+          return setPersons(persons.concat(newPerson))
+        })
+        .catch(error => {
+          console.log(error.response.data, 'homma failas')
+          setPrompt(`${error.response.data.error}`, styles.fail)
+        })
+
       setPrompt(`lisättiin ${newPerson.name}`, styles.success)
     }
     setNewName('')
@@ -87,6 +98,7 @@ const App = () => {
       <h2>Puhelinluettelo</h2>
       <Prompt message={message} style={style} />
       <Filter filterBy={filterBy} change={handleFilterChange} />
+      <h2>Lisää uusi</h2>
       <Add
         name={newName}
         nameChange={handleNameChange}
@@ -139,7 +151,6 @@ const Filter = ({ filterBy, change }) => (
   </form>
 )
 const Prompt = ({ message, style }) => {
-  console.log(message, style)
   return <div style={style}>{message}</div>
 }
 
