@@ -72,14 +72,13 @@ const App = () => {
         .then(res => {
           console.log('create response', res)
           newPerson.id = res.id
+          setPrompt(`lisättiin ${newPerson.name}`, styles.success)
           return setPersons(persons.concat(newPerson))
         })
         .catch(error => {
           console.log(error.response.data, 'homma failas')
-          setPrompt(`${error.response.data.error}`, styles.fail)
+          setPrompt(error.response.data.error, styles.fail)
         })
-
-      setPrompt(`lisättiin ${newPerson.name}`, styles.success)
     }
     setNewName('')
     setNewNumber('')
