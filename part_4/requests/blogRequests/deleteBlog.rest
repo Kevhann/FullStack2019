@@ -1,9 +1,3 @@
-POST http://localhost:3003/api/blogs
+DELETE http://localhost:3003/api/blogs/5c5d83c1bdf4ea1ea20f3879
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImxtYW8iLCJpZCI6IjVjNWQ3MzdjNGVhYWY2MTY3YjY3YzViZiIsImlhdCI6MTU0OTYyODk1OX0.GDLfRRdmnOTxAcHjvyZ-FYtLJIWT5BckNSUi-d3_pls
-
-{
-  "title": "poisto 1",
-  "author": "poisto 1",
-  "url": "www.Blogger.com"
-}
