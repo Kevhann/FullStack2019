@@ -6,6 +6,7 @@ import loginService from './services/login'
 import Create from './components/Create'
 import './styles.css'
 import Messages from './components/Messages'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -28,17 +29,20 @@ const App = () => {
     }
   }, [])
 
+  const blogFormRef = React.createRef()
+
   const handleLogin = async event => {
     event.preventDefault()
     console.log('logged', username, password)
     try {
-      const user = await loginService.login({
+      const loggedUser = await loginService.login({
         username,
         password
       })
-      blogService.setToken(user.token)
-      setUser(user)
-      window.localStorage.setItem('loggedUser', JSON.stringify(user))
+      console.log('logattiin sisään', loggedUser)
+      blogService.setToken(loggedUser.token)
+      setUser(loggedUser)
+      window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
     } catch (exception) {
       errorNotification('Invalid login credentials')
     }
@@ -48,6 +52,21 @@ const App = () => {
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedUser')
+  }
+
+  const handleBlogLike = async blog => {
+    await blogService.like(blog)
+    setBlogs(blogs.map(b => (b !== blog ? b : blog)))
+  }
+  const handleDeletion = async blog => {
+    if (window.confirm(`remove ${blog.title}?`)) {
+      try {
+        await blogService.remove(blog)
+        setBlogs(blogs.filter(b => b !== blog))
+      } catch (error) {
+        console.log('error while deleting', error)
+      }
+    }
   }
   const successNotification = message => {
     console.log('successNotification: ', message)
@@ -82,23 +101,37 @@ const App = () => {
   }
   return (
     <div>
-      <h2>blogs</h2>
+      <h1>blogs</h1>
       <h3>{user.name} logged in</h3>
       <button onClick={handleLogout}>Logout</button>
-      <h3>Create new blog!</h3>
-
       <Messages.Error message={errorMessage} />
       <Messages.Success message={successMessage} />
-      <Create
-        blogs={blogs}
-        setBlogs={setBlogs}
-        errorNotification={errorNotification}
-        successNotification={successNotification}
-      />
+      <Togglable
+        showLabel={'add blog'}
+        cancelLabel={'cancel'}
+        ref={blogFormRef}
+      >
+        <h3>Create new blog!</h3>
 
-      {blogs.map(blog => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+        <Create
+          blogs={blogs}
+          setBlogs={setBlogs}
+          errorNotification={errorNotification}
+          successNotification={successNotification}
+          blogFormRef={blogFormRef}
+        />
+      </Togglable>
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleBlogLike={handleBlogLike}
+            user={user}
+            handleDeletion={handleDeletion}
+          />
+        ))}
     </div>
   )
 }

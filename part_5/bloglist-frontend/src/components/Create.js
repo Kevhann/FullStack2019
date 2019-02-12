@@ -5,7 +5,8 @@ const Create = ({
   blogs,
   setBlogs,
   errorNotification,
-  successNotification
+  successNotification,
+  blogFormRef
 }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -16,11 +17,11 @@ const Create = ({
     try {
       const addedBlog = await blogService.create({ title, author, url })
       console.log('backend response to create blog', addedBlog)
+      blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(addedBlog))
-      successNotification(`added blog ${title}`)
-    } catch (exception) {
-      console.log('while adding blog', exception)
-      errorNotification('exception')
+      successNotification(`added blog ${title} by ${author}`)
+    } catch (error) {
+      errorNotification(error.response.data.error)
     }
     setTitle('')
     setUrl('')
