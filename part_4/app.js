@@ -10,6 +10,7 @@ const logger = require('./utils/logger')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 
+mongoose.set('useCreateIndex', true)
 logger.info('connecting to', config.MONGODB_URI)
 const connect = async () => {
   try {
