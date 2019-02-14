@@ -112,7 +112,6 @@ const App = () => {
         ref={blogFormRef}
       >
         <h3>Create new blog!</h3>
-
         <Create
           blogs={blogs}
           setBlogs={setBlogs}

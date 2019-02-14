@@ -4,6 +4,7 @@ const baseUrl = '/api/blogs'
 let token = null
 
 const setToken = newToken => {
+  console.log('newtoken', newToken)
   token = `bearer ${newToken}`
 }
 

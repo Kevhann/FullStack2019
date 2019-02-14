@@ -13,18 +13,16 @@ const Blog = ({ blog, handleBlogLike, user, handleDeletion }) => {
   if (!showAll)
     return (
       <div style={blogStyle}>
-        <div onClick={() => setShowAll(true)}>
+        <div onClick={() => setShowAll(true)} className="condensedBlog">
           {blog.title} {blog.author}
         </div>
       </div>
     )
 
   return (
-    <div style={blogStyle}>
-      <div onClick={() => setShowAll(false)}>
-        {blog.title}
-        <div>{blog.author}</div>
-      </div>
+    <div style={blogStyle} className="expandedBlog">
+      <div onClick={() => setShowAll(false)}>{blog.title}</div>
+      <div>{blog.author}</div>
       <div>{blog.url}</div>
       <div>
         {blog.likes} likes
