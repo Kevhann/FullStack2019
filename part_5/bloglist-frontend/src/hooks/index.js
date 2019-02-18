@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
-
-const useField = type => {
+import { useState } from 'react'
+export const useField = type => {
   const [value, setValue] = useState('')
 
   const onChange = event => {
     setValue(event.target.value)
   }
+  const reset = () => {
+    setValue('')
+  }
 
   return {
-    type,
-    value,
-    onChange
+    props: {
+      type,
+      value,
+      onChange
+    },
+    reset
   }
 }
-export default useField

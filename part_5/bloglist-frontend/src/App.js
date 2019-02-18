@@ -7,14 +7,16 @@ import Create from './components/Create'
 import './styles.css'
 import Messages from './components/Messages'
 import Togglable from './components/Togglable'
+import { useField } from './hooks/index'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+
+  const username = useField('text')
+  const password = useField('password')
 
   useEffect(() => {
     blogService.getAll().then(blogs => setBlogs(blogs))
@@ -33,11 +35,11 @@ const App = () => {
 
   const handleLogin = async event => {
     event.preventDefault()
-    console.log('logged', username, password)
+    console.log('logged', username.props.value)
     try {
       const loggedUser = await loginService.login({
-        username,
-        password
+        username: username.props.value,
+        password: password.props.value
       })
       console.log('logattiin sisään', loggedUser)
       blogService.setToken(loggedUser.token)
@@ -46,8 +48,8 @@ const App = () => {
     } catch (exception) {
       errorNotification('Invalid login credentials')
     }
-    setUsername('')
-    setPassword('')
+    username.reset()
+    password.reset()
   }
   const handleLogout = () => {
     setUser(null)
@@ -91,9 +93,7 @@ const App = () => {
         <Messages.Error message={errorMessage} />
         <Login
           username={username}
-          setUsername={setUsername}
           password={password}
-          setPassword={setPassword}
           handleLogin={handleLogin}
         />
       </div>

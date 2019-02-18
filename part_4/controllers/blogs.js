@@ -18,14 +18,16 @@ blogsRouter.post('/', async (request, response, next) => {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
     const user = await User.findById(decodedToken.id)
-
     const blog = new Blog(body)
-
     blog.user = user.id
     const result = await blog.save()
     user.blogs = user.blogs.concat(result.id)
     await user.save()
-    response.json(result.toJSON())
+    const backendRes = await Blog.findById(result.id).populate('user', {
+      username: 1,
+      name: 1
+    })
+    response.json(backendRes.toJSON())
   } catch (exception) {
     next(exception)
   }
@@ -33,7 +35,7 @@ blogsRouter.post('/', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   const token = request.token
-
+  console.log('deletion ', request.token)
   try {
     const decodedToken = jwt.verify(token, process.env.SECRET)
     if (!token || !decodedToken.id) {
@@ -41,12 +43,11 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     }
     const blog = await Blog.findById(request.params.id)
     console.log(blog)
-    const userId = blog.user.toString()
-    if (decodedToken.id !== userId) {
-      return response.status(401).json({ error: 'not authenticated' })
+    if (!blog.user || decodedToken.id === blog.user.toString()) {
+      await Blog.findByIdAndRemove(request.params.id)
+      response.status(204).end()
     }
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
+    return response.status(401).json({ error: 'not authenticated' })
   } catch (exception) {
     next(exception)
   }

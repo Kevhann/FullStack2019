@@ -14,16 +14,16 @@ const Blog = ({ blog, handleBlogLike, user, handleDeletion }) => {
     return (
       <div style={blogStyle}>
         <div onClick={() => setShowAll(true)} className="condensedBlog">
-          {blog.title} {blog.author}
+          {blog.title}, by {blog.author}
         </div>
       </div>
     )
 
   return (
     <div style={blogStyle} className="expandedBlog">
-      <div onClick={() => setShowAll(false)}>{blog.title}</div>
-      <div>{blog.author}</div>
-      <div>{blog.url}</div>
+      <div onClick={() => setShowAll(false)}>Title: {blog.title}</div>
+      <div>Author: {blog.author}</div>
+      <div>Webpage: {blog.url}</div>
       <div>
         {blog.likes} likes
         <button

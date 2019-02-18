@@ -7,7 +7,7 @@ const Remove = ({ user, blog, handleDeletion }) => {
     return <button onClick={() => handleDeletion(blog)}>remove</button>
   }
   if (user.username !== blog.user.username) {
-    console.log('not suthorized to delete')
+    console.log('not authorized to delete')
     return null
   }
   return <button onClick={() => handleDeletion(blog)}>remove</button>

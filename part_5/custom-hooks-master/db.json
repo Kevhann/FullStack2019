@@ -1,0 +1,36 @@
+{
+  "notes": [
+    {
+      "content": "custom-hookit aivan mahtavia",
+      "id": 1
+    },
+    {
+      "content": "paras feature ikinä <3",
+      "id": 2
+    },
+    {
+      "content": "custom hookit on taikaa",
+      "id": 26
+    },
+    {
+      "content": "helppoa ja hauskaa",
+      "id": 27
+    },
+    {
+      "content": "kaikki on toiminnassa",
+      "id": 28
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "testikäyttäjä",
+      "number": "12341234",
+      "id": 12
+    }
+  ]
+}
