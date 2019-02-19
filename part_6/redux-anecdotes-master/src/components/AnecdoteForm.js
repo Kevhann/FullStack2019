@@ -3,12 +3,12 @@ import { createAnecdote } from '../reducers/anecdoteReducer'
 import { connect } from 'react-redux'
 
 const AnecdoteForm = ({ createAnecdote }) => {
-  const create = event => {
+  const create = async event => {
     event.preventDefault()
     const content = event.target.create.value
-    console.log('created anecdote', content)
-    createAnecdote(content)
     event.target.create.value = ''
+    console.log('created anecdote in anecdoteform', content)
+    createAnecdote(content)
   }
 
   return (

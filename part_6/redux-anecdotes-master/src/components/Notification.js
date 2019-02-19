@@ -8,7 +8,7 @@ const Notification = ({ notifications }) => {
     borderWidth: 1
   }
   if (!notifications) return null
-  return <div style={style}>voted for '{notifications}'</div>
+  return <div style={style}>{notifications}</div>
 }
 const mapStateToProps = props => ({
   notifications: props.notifications

@@ -5,11 +5,8 @@ import { notificationMessage } from '../reducers/notificationReducer'
 
 const AnecdoteList = ({ anecdotes, voteAnecdote, notificationMessage }) => {
   const vote = anecdote => {
-    voteAnecdote(anecdote.id)
-    notificationMessage(anecdote.content)
-    setTimeout(() => {
-      notificationMessage(null)
-    }, 5000)
+    voteAnecdote(anecdote)
+    notificationMessage(`you voted for ${anecdote.content}`, 3)
   }
 
   return (
