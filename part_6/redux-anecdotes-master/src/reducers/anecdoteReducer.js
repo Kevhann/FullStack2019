@@ -33,7 +33,7 @@ const AnecdoteReducer = (state = [], action) => {
       console.log('CREATE sisällä', action.content)
       return state.concat(action.content)
     case 'INITIALIZE':
-      console.log(action.anecdotes)
+      console.log('initialize', action.anecdotes)
       return action.anecdotes
     default:
       return state

@@ -10,7 +10,6 @@ const AnecdoteForm = ({ createAnecdote }) => {
     console.log('created anecdote in anecdoteform', content)
     createAnecdote(content)
   }
-
   return (
     <div>
       <h2>create new</h2>
