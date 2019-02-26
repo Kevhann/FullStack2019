@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
 import loginService from './services/login'
 import Create from './components/Create'
 import './styles.css'
-import Messages from './components/Messages'
 import Togglable from './components/Togglable'
 import { useField } from './hooks/index'
+import Error from './components/Error'
+import Success from './components/Success'
+import { setError } from './reducers/errorReducer'
 
-const App = () => {
+const App = ({ setError }) => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [successMessage, setSuccessMessage] = useState(null)
-
   const username = useField('text')
   const password = useField('password')
 
@@ -46,7 +46,8 @@ const App = () => {
       setUser(loggedUser)
       window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
     } catch (exception) {
-      errorNotification('Invalid login credentials')
+      console.log('bad login', setError)
+      setError('Invalid login credentials', 10)
     }
     username.reset()
     password.reset()
@@ -70,27 +71,11 @@ const App = () => {
       }
     }
   }
-  const successNotification = message => {
-    console.log('successNotification: ', message)
-    setSuccessMessage(message)
-    setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
-  }
-
-  const errorNotification = message => {
-    console.log('errorNotification: ', message)
-    setErrorMessage(message)
-    setTimeout(() => {
-      setErrorMessage(null)
-    }, 5000)
-  }
 
   if (user === null) {
     return (
       <div>
-        <h2>Login</h2>
-        <Messages.Error message={errorMessage} />
+        <Error />
         <Login
           username={username}
           password={password}
@@ -104,19 +89,17 @@ const App = () => {
       <h1>blogs</h1>
       <h3>{user.name} logged in</h3>
       <button onClick={handleLogout}>Logout</button>
-      <Messages.Error message={errorMessage} />
-      <Messages.Success message={successMessage} />
+      <Error />
+      <Success />
       <Togglable
         showLabel={'add blog'}
         cancelLabel={'cancel'}
         ref={blogFormRef}
       >
-        <h3>Create new blog!</h3>
         <Create
           blogs={blogs}
           setBlogs={setBlogs}
-          errorNotification={errorNotification}
-          successNotification={successNotification}
+          setError={setError}
           blogFormRef={blogFormRef}
         />
       </Togglable>
@@ -135,4 +118,7 @@ const App = () => {
   )
 }
 
-export default App
+export default connect(
+  null,
+  { setError }
+)(App)

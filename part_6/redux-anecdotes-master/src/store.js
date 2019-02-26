@@ -6,7 +6,6 @@ import notifications from './reducers/notificationReducer'
 import filter from './reducers/filterReducer'
 
 const reducer = combineReducers({ anecdotes, notifications, filter })
-
 const store = createStore(reducer, applyMiddleware(thunk))
 
 export default store

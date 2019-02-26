@@ -1,14 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import blogService from '../services/blogs'
 import { useField } from '../hooks/index'
+import { connect } from 'react-redux'
+import { setSuccess } from '../reducers/successReducer'
 
-const Create = ({
-  blogs,
-  setBlogs,
-  errorNotification,
-  successNotification,
-  blogFormRef
-}) => {
+const Create = ({ blogs, setBlogs, setError, blogFormRef, setSuccess }) => {
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
@@ -24,11 +20,9 @@ const Create = ({
       console.log('backend response to create blog', addedBlog)
       blogFormRef.current.toggleVisibility()
       setBlogs(blogs.concat(addedBlog))
-      successNotification(
-        `added blog ${title.props.value} by ${author.props.value}`
-      )
+      setSuccess(`added blog ${title.props.value} by ${author.props.value}`, 10)
     } catch (error) {
-      errorNotification(error.response.data.error)
+      setError(error.response.data.error, 10)
     }
     title.reset()
     author.reset()
@@ -37,6 +31,7 @@ const Create = ({
 
   return (
     <div>
+      <h3>Create new blog!</h3>
       <form onSubmit={handleBlogSubmit}>
         <div>
           Title
@@ -56,4 +51,7 @@ const Create = ({
   )
 }
 
-export default Create
+export default connect(
+  null,
+  { setSuccess }
+)(Create)
