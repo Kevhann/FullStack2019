@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import Remove from './Remove'
+import { connect } from 'react-redux'
+import { likeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, handleBlogLike, user, handleDeletion }) => {
+const Blog = ({ blog, likeBlog, user }) => {
   const [showAll, setShowAll] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -10,6 +12,7 @@ const Blog = ({ blog, handleBlogLike, user, handleDeletion }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+  console.log('blog komponentti', blog)
   if (!showAll)
     return (
       <div style={blogStyle}>
@@ -28,17 +31,23 @@ const Blog = ({ blog, handleBlogLike, user, handleDeletion }) => {
         {blog.likes} likes
         <button
           onClick={() => {
-            console.log('liked blog', blog.title)
-            handleBlogLike(blog)
+            console.log('liked blog', blog)
+            likeBlog(blog)
           }}
         >
           like
         </button>
       </div>
       <div>Added by {blog.user ? blog.user.name : 'unknown'}</div>
-      <Remove user={user} blog={blog} handleDeletion={handleDeletion} />
+      <Remove user={user} blog={blog} />
     </div>
   )
 }
+/*const mapStateToProps = state => ({
+  user: state.user
+})*/
 
-export default Blog
+export default connect(
+  null,
+  { likeBlog }
+)(Blog)

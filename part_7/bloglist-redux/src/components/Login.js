@@ -1,5 +1,16 @@
 import React from 'react'
-const Login = ({ handleLogin, username, password }) => {
+import { loginUser } from '../reducers/userReducer'
+import { connect } from 'react-redux'
+
+const Login = ({ username, password, loginUser }) => {
+  const handleLogin = async event => {
+    event.preventDefault()
+    console.log('logged', username.props.value)
+    loginUser(username.props.value, password.props.value)
+
+    username.reset()
+    password.reset()
+  }
   return (
     <div>
       <h2>Login</h2>
@@ -17,4 +28,7 @@ const Login = ({ handleLogin, username, password }) => {
     </div>
   )
 }
-export default Login
+export default connect(
+  null,
+  { loginUser }
+)(Login)

@@ -1,29 +1,25 @@
 import React from 'react'
-import blogService from '../services/blogs'
 import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
-import { setSuccess } from '../reducers/successReducer'
+import { createBlog } from '../reducers/blogReducer'
 
-const Create = ({ blogs, setBlogs, setError, blogFormRef, setSuccess }) => {
+const Create = ({ createBlog, blogFormRef }) => {
   const title = useField('text')
   const author = useField('text')
   const url = useField('text')
 
   const handleBlogSubmit = async event => {
     event.preventDefault()
-    try {
-      const addedBlog = await blogService.create({
-        title: title.props.value,
-        author: author.props.value,
-        url: url.props.value
-      })
-      console.log('backend response to create blog', addedBlog)
-      blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(addedBlog))
-      setSuccess(`added blog ${title.props.value} by ${author.props.value}`, 10)
-    } catch (error) {
-      setError(error.response.data.error, 10)
+
+    const addedBlog = {
+      title: title.props.value,
+      author: author.props.value,
+      url: url.props.value
     }
+    console.log('backend response to create blog', addedBlog)
+    blogFormRef.current.toggleVisibility()
+    createBlog(addedBlog)
+
     title.reset()
     author.reset()
     url.reset()
@@ -53,5 +49,5 @@ const Create = ({ blogs, setBlogs, setError, blogFormRef, setSuccess }) => {
 
 export default connect(
   null,
-  { setSuccess }
+  { createBlog }
 )(Create)

@@ -1,10 +1,8 @@
-export const setSuccess = (success, time) => {
-  return async dispatch => {
-    dispatch({ type: 'SUCCESS', success })
-    await setTimeout(() => {
-      dispatch({ type: 'SUCCESS', success: null })
-    }, time * 1000)
-  }
+export const setSuccess = (success, time, dispatch) => {
+  dispatch({ type: 'SUCCESS', success })
+  setTimeout(() => {
+    dispatch({ type: 'SUCCESS', success: null })
+  }, time * 1000)
 }
 
 const successReducer = (state = null, action) => {

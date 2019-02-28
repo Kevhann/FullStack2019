@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import Login from './components/Login'
-import loginService from './services/login'
 import Create from './components/Create'
 import './styles.css'
 import Togglable from './components/Togglable'
 import { useField } from './hooks/index'
 import Error from './components/Error'
 import Success from './components/Success'
-import { setError } from './reducers/errorReducer'
+import { initializeBlogs } from './reducers/blogReducer'
+import BlogList from './components/BlogList'
+import { setUser } from './reducers/userReducer'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import Users from './components/Users'
+import { initializeUsers } from './reducers/allUsersReducer'
+import IndividualUser from './components/IndividualUser'
 
-const App = ({ setError }) => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
   const username = useField('text')
   const password = useField('password')
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs))
+    initializeBlogs()
+    initializeUsers()
   }, [])
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -32,55 +35,17 @@ const App = ({ setError }) => {
   }, [])
 
   const blogFormRef = React.createRef()
-
-  const handleLogin = async event => {
-    event.preventDefault()
-    console.log('logged', username.props.value)
-    try {
-      const loggedUser = await loginService.login({
-        username: username.props.value,
-        password: password.props.value
-      })
-      console.log('logattiin sisään', loggedUser)
-      blogService.setToken(loggedUser.token)
-      setUser(loggedUser)
-      window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
-    } catch (exception) {
-      console.log('bad login', setError)
-      setError('Invalid login credentials', 10)
-    }
-    username.reset()
-    password.reset()
-  }
+  console.log('luotu blogFormRef', blogFormRef)
   const handleLogout = () => {
     setUser(null)
     window.localStorage.removeItem('loggedUser')
-  }
-
-  const handleBlogLike = async blog => {
-    await blogService.like(blog)
-    setBlogs(blogs.map(b => (b !== blog ? b : blog)))
-  }
-  const handleDeletion = async blog => {
-    if (window.confirm(`remove ${blog.title}?`)) {
-      try {
-        await blogService.remove(blog)
-        setBlogs(blogs.filter(b => b !== blog))
-      } catch (error) {
-        console.log('error while deleting', error)
-      }
-    }
   }
 
   if (user === null) {
     return (
       <div>
         <Error />
-        <Login
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-        />
+        <Login username={username} password={password} />
       </div>
     )
   }
@@ -88,37 +53,43 @@ const App = ({ setError }) => {
     <div>
       <h1>blogs</h1>
       <h3>{user.name} logged in</h3>
-      <button onClick={handleLogout}>Logout</button>
       <Error />
       <Success />
-      <Togglable
-        showLabel={'add blog'}
-        cancelLabel={'cancel'}
-        ref={blogFormRef}
-      >
-        <Create
-          blogs={blogs}
-          setBlogs={setBlogs}
-          setError={setError}
-          blogFormRef={blogFormRef}
-        />
-      </Togglable>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map(blog => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleBlogLike={handleBlogLike}
-            user={user}
-            handleDeletion={handleDeletion}
+      <button onClick={handleLogout}>Logout</button>
+
+      <Router>
+        <div>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <>
+                <Togglable
+                  showLabel={'add blog'}
+                  cancelLabel={'cancel'}
+                  ref={blogFormRef}
+                >
+                  <Create blogFormRef={blogFormRef} />
+                </Togglable>
+                <BlogList user={user} />
+              </>
+            )}
           />
-        ))}
+          <Route exact path="/users" render={() => <Users />} />
+          <Route
+            path="/users/:id"
+            render={({ match }) => <IndividualUser id={match.params.id} />}
+          />
+        </div>
+      </Router>
     </div>
   )
 }
+const mapStateToProps = state => ({
+  user: state.user
+})
 
 export default connect(
-  null,
-  { setError }
+  mapStateToProps,
+  { initializeBlogs, setUser, initializeUsers }
 )(App)
