@@ -15,6 +15,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Users from './components/Users'
 import { initializeUsers } from './reducers/allUsersReducer'
 import IndividualUser from './components/IndividualUser'
+import Blog from './components/Blog'
+import Menu from './components/Menu'
 
 const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
   const username = useField('text')
@@ -36,10 +38,6 @@ const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
 
   const blogFormRef = React.createRef()
   console.log('luotu blogFormRef', blogFormRef)
-  const handleLogout = () => {
-    setUser(null)
-    window.localStorage.removeItem('loggedUser')
-  }
 
   if (user === null) {
     return (
@@ -51,14 +49,14 @@ const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
   }
   return (
     <div>
-      <h1>blogs</h1>
+      <h1>Blog App</h1>
       <h3>{user.name} logged in</h3>
       <Error />
       <Success />
-      <button onClick={handleLogout}>Logout</button>
 
       <Router>
         <div>
+          <Menu />
           <Route
             exact
             path="/"
@@ -79,6 +77,10 @@ const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
           <Route
             path="/users/:id"
             render={({ match }) => <IndividualUser id={match.params.id} />}
+          />
+          <Route
+            path="/blogs/:id"
+            render={({ match }) => <Blog id={match.params.id} user={user} />}
           />
         </div>
       </Router>

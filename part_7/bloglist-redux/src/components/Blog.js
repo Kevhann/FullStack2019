@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Remove from './Remove'
 import { connect } from 'react-redux'
 import { likeBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, likeBlog, user }) => {
-  const [showAll, setShowAll] = useState(false)
+const Blog = ({ id, likeBlog, user, blogs }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -12,19 +11,13 @@ const Blog = ({ blog, likeBlog, user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+  const blog = blogs.find(b => b.id === id)
   console.log('blog komponentti', blog)
-  if (!showAll)
-    return (
-      <div style={blogStyle}>
-        <div onClick={() => setShowAll(true)} className="condensedBlog">
-          {blog.title}, by {blog.author}
-        </div>
-      </div>
-    )
+  if (blog === undefined) return null
 
   return (
     <div style={blogStyle} className="expandedBlog">
-      <div onClick={() => setShowAll(false)}>Title: {blog.title}</div>
+      <div>Title: {blog.title}</div>
       <div>Author: {blog.author}</div>
       <div>Webpage: {blog.url}</div>
       <div>
@@ -43,11 +36,8 @@ const Blog = ({ blog, likeBlog, user }) => {
     </div>
   )
 }
-/*const mapStateToProps = state => ({
-  user: state.user
-})*/
-
+const mapStateToProps = state => ({ blogs: state.blogs })
 export default connect(
-  null,
+  mapStateToProps,
   { likeBlog }
 )(Blog)

@@ -39,7 +39,7 @@ export const removeBlog = blog => {
 export const likeBlog = blog => {
   return async dispatch => {
     await blogService.like(blog)
-    blog.likes = blog.likes + 1
+
     setSuccess(`liked blog ${blog.title} by ${blog.author}`, 5, dispatch)
     dispatch({ type: 'BLOGLIKE', blog })
     console.log()
@@ -59,11 +59,7 @@ const blogReducer = (state = [], action) => {
       blogService.setToken(action.token)
       return state
     case 'BLOGLIKE':
-      //console.log('state reducerissa', state)
-      //console.log('liketty blogi', action.blog)
       const uudet = state.map(b => (b.id !== action.blog.id ? b : action.blog))
-      //console.log('uudet', uudet)
-      // uusissa like määrä on päivitetty, mutta se ei renderaa for some fucking reason
       return uudet
     default:
       return state
