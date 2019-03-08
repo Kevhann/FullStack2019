@@ -24,18 +24,18 @@ export const initializeBlogs = () => {
     dispatch({ type: 'INITIALIZEBLOGS', blogs })
   }
 }
-export const removeBlog = blog => {
+
+export const removeBlog = blog => async dispatch => {
   if (window.confirm(`remove ${blog.title}?`)) {
-    return async dispatch => {
-      try {
-        await blogService.remove(blog)
-        dispatch({ type: 'REMOVEBLOG', blog })
-      } catch (error) {
-        console.log('error while deleting', error)
-      }
+    try {
+      await blogService.remove(blog)
+      dispatch({ type: 'REMOVEBLOG', blog })
+    } catch (error) {
+      console.log('error while deleting', error)
     }
   }
 }
+
 export const likeBlog = blog => {
   return async dispatch => {
     await blogService.like(blog)

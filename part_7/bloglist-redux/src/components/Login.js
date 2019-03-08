@@ -1,6 +1,7 @@
 import React from 'react'
 import { loginUser } from '../reducers/userReducer'
 import { connect } from 'react-redux'
+import { Button } from 'react-bootstrap'
 
 const Login = ({ username, password, loginUser }) => {
   const handleLogin = async event => {
@@ -23,7 +24,9 @@ const Login = ({ username, password, loginUser }) => {
           Password
           <input {...password.props} />
         </div>
-        <button type="submit">Login</button>
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
       </form>
     </div>
   )

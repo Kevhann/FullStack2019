@@ -19,7 +19,7 @@ import Blog from './components/Blog'
 import Menu from './components/Menu'
 
 const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
-  const username = useField('text')
+  const username = useField('adf')
   const password = useField('password')
 
   useEffect(() => {
@@ -41,22 +41,20 @@ const App = ({ initializeBlogs, user, setUser, initializeUsers }) => {
 
   if (user === null) {
     return (
-      <div>
+      <div className="container">
         <Error />
         <Login username={username} password={password} />
       </div>
     )
   }
   return (
-    <div>
-      <h1>Blog App</h1>
-      <h3>{user.name} logged in</h3>
-      <Error />
-      <Success />
-
+    <div className="container">
       <Router>
         <div>
           <Menu />
+          <h1>Blog App</h1>
+          <Error />
+          <Success />
           <Route
             exact
             path="/"

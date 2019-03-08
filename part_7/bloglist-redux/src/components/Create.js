@@ -2,6 +2,7 @@ import React from 'react'
 import { useField } from '../hooks/index'
 import { connect } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { Button } from 'react-bootstrap'
 
 const Create = ({ createBlog, blogFormRef }) => {
   const title = useField('text')
@@ -41,7 +42,9 @@ const Create = ({ createBlog, blogFormRef }) => {
           Url
           <input {...url.props} />
         </div>
-        <button onClick={handleBlogSubmit}>Submit</button>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
       </form>
     </div>
   )

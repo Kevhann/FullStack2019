@@ -32,6 +32,11 @@ blogsRouter.post('/', async (request, response, next) => {
     next(exception)
   }
 })
+blogsRouter.post('/blogs/:id/comments', async (request, response, next) => {
+  console.log('request:', request)
+  console.log('response:', response)
+  console.log('next:', next)
+})
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   const token = request.token
