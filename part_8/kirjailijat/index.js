@@ -83,6 +83,12 @@ const resolvers = {
     },
     me: (root, args, context) => context.currentUser
   },
+  Author: {
+    bookCount: async root => {
+      const res = await Book.find({}).populate('author')
+      return res.filter(b => b.author._id.equals(root._id)).length
+    }
+  },
   Mutation: {
     addBook: async (root, args, context) => {
       console.log('context:', context.currentUser)
@@ -150,12 +156,6 @@ const resolvers = {
   Subscription: {
     bookAdded: {
       subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
-    }
-  },
-  Author: {
-    bookCount: async root => {
-      const res = await Book.find({}).populate('author')
-      return res.filter(b => b.author._id.equals(root._id)).length
     }
   }
 }
