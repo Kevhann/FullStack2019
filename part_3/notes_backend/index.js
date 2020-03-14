@@ -1,24 +1,24 @@
-const express = require('express')
+const express = require("express")
 const app = express()
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser")
 
 let notes = [
   {
     id: 1,
-    content: 'HTML on helppoa',
-    date: '2017-12-10T17:30:31.098Z',
+    content: "HTML on helppoa",
+    date: "2017-12-10T17:30:31.098Z",
     important: true
   },
   {
     id: 2,
-    content: 'Selain pystyy suorittamaan vain javascriptiä',
-    date: '2017-12-10T18:39:34.091Z',
+    content: "Selain pystyy suorittamaan vain javascriptiä",
+    date: "2017-12-10T18:39:34.091Z",
     important: false
   },
   {
     id: 3,
-    content: 'HTTP-protokollan tärkeimmät metodit ovat GET ja POST',
-    date: '2017-12-10T19:20:14.298Z',
+    content: "HTTP-protokollan tärkeimmät metodit ovat GET ja POST",
+    date: "2017-12-10T19:20:14.298Z",
     important: true
   }
 ]
@@ -30,10 +30,10 @@ const generateId = () => {
   return maxId + 1
 }
 
-app.post('/notes', (req, res) => {
+app.post("/notes", (req, res) => {
   const body = req.body
   if (body.content === undefined) {
-    return res.status(400).json({ error: 'content missing' })
+    return res.status(400).json({ error: "content missing" })
   }
   const note = {
     content: body.content,
@@ -47,15 +47,17 @@ app.post('/notes', (req, res) => {
   res.json(note)
 })
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>')
+app.get("/", (req, res) => {
+  res.send("<h1>Hello World</h1>")
 })
 
-app.get('/notes', (req, res) => {
-  res.json(notes)
+app.get("/notes", (req, res) => {
+  console.log("notes")
+
+  res.send(notes)
 })
 
-app.get('/notes/:id', (req, res) => {
+app.get("/notes/:id", (req, res) => {
   const id = Number(req.params.id)
   console.log(id)
   const note = notes.find(note => note.id === id)
@@ -67,7 +69,7 @@ app.get('/notes/:id', (req, res) => {
   }
 })
 
-app.delete('/notes/:id', (req, res) => {
+app.delete("/notes/:id", (req, res) => {
   const id = Number(req.params.id)
   notes = notes.filter(note => note.id !== id)
 
